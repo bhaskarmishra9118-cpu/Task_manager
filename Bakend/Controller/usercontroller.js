@@ -2,15 +2,21 @@ const user_model = require("../model/usermodel");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 
+const isHtmlRequest = (req) => req.headers.accept && req.headers.accept.includes("text/html");
+
 exports.register = async (req, res) => {
   try {
     const { name, email, password } = req.body;
 
     // Validation
     if (!name || !email || !password) {
+      const message = "All fields are required";
+      if (isHtmlRequest(req)) {
+        return res.redirect(`/register?message=${encodeURIComponent(message)}`);
+      }
       return res.status(400).json({
         success: false,
-        message: "All fields are required",
+        message,
       });
     }
 
@@ -18,9 +24,13 @@ exports.register = async (req, res) => {
     const existingUser = await user_model.findOne({ email });
 
     if (existingUser) {
+      const message = "Email already exists. Please login.";
+      if (isHtmlRequest(req)) {
+        return res.redirect(`/register?message=${encodeURIComponent(message)}`);
+      }
       return res.status(409).json({
         success: false,
-        message: "Email already exists. Please login.",
+        message,
       });
     }
 
@@ -54,6 +64,10 @@ exports.register = async (req, res) => {
       maxAge: 60 * 60 * 1000,
     });
 
+    if (isHtmlRequest(req)) {
+      return res.redirect(`/dashboard?message=${encodeURIComponent("User registered successfully")}`);
+    }
+
     return res.status(201).json({
       success: true,
       message: "User registered successfully",
@@ -66,6 +80,10 @@ exports.register = async (req, res) => {
     });
   } catch (error) {
     console.error(error);
+
+    if (isHtmlRequest(req)) {
+      return res.redirect(`/register?message=${encodeURIComponent("Internal Server Error")}`);
+    }
 
     return res.status(500).json({
       success: false,
@@ -80,9 +98,13 @@ exports.login = async (req, res) => {
 
     // Validation
     if (!email || !password) {
+      const message = "All fields are required";
+      if (isHtmlRequest(req)) {
+        return res.redirect(`/login?message=${encodeURIComponent(message)}`);
+      }
       return res.status(400).json({
         success: false,
-        message: "All fields are required",
+        message,
       });
     }
 
@@ -90,9 +112,13 @@ exports.login = async (req, res) => {
     const user = await user_model.findOne({ email });
 
     if (!user) {
+      const message = "User not found. Please register first.";
+      if (isHtmlRequest(req)) {
+        return res.redirect(`/login?message=${encodeURIComponent(message)}`);
+      }
       return res.status(404).json({
         success: false,
-        message: "User not found. Please register first.",
+        message,
       });
     }
 
@@ -100,9 +126,13 @@ exports.login = async (req, res) => {
     const isMatch = await bcrypt.compare(password, user.password);
 
     if (!isMatch) {
+      const message = "Invalid credentials";
+      if (isHtmlRequest(req)) {
+        return res.redirect(`/login?message=${encodeURIComponent(message)}`);
+      }
       return res.status(401).json({
         success: false,
-        message: "Invalid credentials",
+        message,
       });
     }
 
@@ -126,6 +156,10 @@ exports.login = async (req, res) => {
       maxAge: 60 * 60 * 1000,
     });
 
+    if (isHtmlRequest(req)) {
+      return res.redirect(`/dashboard?message=${encodeURIComponent("Login Successful")}`);
+    }
+
     return res.status(200).json({
       success: true,
       message: "Login Successful",
@@ -138,6 +172,10 @@ exports.login = async (req, res) => {
     });
   } catch (error) {
     console.error(error);
+
+    if (isHtmlRequest(req)) {
+      return res.redirect(`/login?message=${encodeURIComponent("Internal Server Error")}`);
+    }
 
     return res.status(500).json({
       success: false,

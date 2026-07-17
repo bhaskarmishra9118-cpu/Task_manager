@@ -1,20 +1,53 @@
-<div>
-  <h1>New Task</h1>
-  <form action="/api/task/createtask" method="post">
-    <div>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Create Task</title>
+  <style>
+    body { margin: 0; font-family: Arial, sans-serif; background: #f4f7fb; color: #222; }
+    .container { max-width: 600px; margin: 50px auto; padding: 24px; background: white; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.08); }
+    form { display: flex; flex-direction: column; gap: 12px; }
+    input, select, button { padding: 10px; border-radius: 8px; border: 1px solid #cbd5e1; }
+    button { background: #4f46e5; color: white; border: none; cursor: pointer; }
+    .actions { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
+    .alert { background: #ecfdf3; color: #065f46; padding: 10px 12px; border-radius: 8px; margin-bottom: 12px; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="actions">
+      <h1>Create Task</h1>
+      <a href="/dashboard">Back to Dashboard</a>
+    </div>
+
+    <% if (message) { %>
+      <div class="alert"><%= message %></div>
+    <% } %>
+
+    <form action="/api/task/createtask" method="post">
       <label for="taskName">Task Name</label>
       <input type="text" id="taskName" name="taskName" minlength="3" placeholder="Enter Task Name" required>
 
       <label for="description">Description</label>
       <input type="text" id="description" name="description" minlength="10" placeholder="Enter Description" required>
 
-      <label for="priority">Enter Priority level</label>
-      <input type="text" id="priority" name="priority" placeholder="Enter priority" required>
+      <label for="priority">Priority</label>
+      <select id="priority" name="priority" required>
+        <option value="high">High</option>
+        <option value="medium" selected>Medium</option>
+        <option value="low">Low</option>
+      </select>
 
       <label for="status">Status</label>
-      <input type="text" id="status" name="status" placeholder="Enter status" value="pending">
+      <select id="status" name="status">
+        <option value="pending" selected>Pending</option>
+        <option value="inprogress">In Progress</option>
+        <option value="completed">Completed</option>
+      </select>
 
       <button type="submit">Create Task</button>
-    </div>
-  </form>
-</div>
+    </form>
+  </div>
+</body>
+</html>

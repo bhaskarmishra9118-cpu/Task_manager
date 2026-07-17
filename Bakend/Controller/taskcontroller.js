@@ -1,5 +1,7 @@
 const Task = require('../model/taskmodel')
 
+const isHtmlRequest = (req) => req.headers.accept && req.headers.accept.includes('text/html')
+
 // =========================
 // Create Task
 // =========================
@@ -10,9 +12,13 @@ exports.createTask = async (req, res) => {
 
     // Validation
     if (!taskName || !description || !priority) {
+      const message = 'All fields are required';
+      if (isHtmlRequest(req)) {
+        return res.redirect(`/createtask?message=${encodeURIComponent(message)}`);
+      }
       return res.status(400).json({
         success: false,
-        message: "All fields are required",
+        message,
       });
     }
 
@@ -22,16 +28,23 @@ exports.createTask = async (req, res) => {
       taskName,
       description,
       priority,
-      status,
+      status: status || 'pending',
     });
+
+    if (isHtmlRequest(req)) {
+      return res.redirect(`/viewtask?message=${encodeURIComponent('Task created successfully')}`);
+    }
 
     return res.status(201).json({
       success: true,
-      message: "Task created successfully",
+      message: 'Task created successfully',
       task,
     });
 
   } catch (error) {
+    if (isHtmlRequest(req)) {
+      return res.redirect(`/createtask?message=${encodeURIComponent(error.message)}`);
+    }
     return res.status(500).json({
       success: false,
       message: error.message,
@@ -76,7 +89,7 @@ exports.getTaskById = async (req, res) => {
     if (!task) {
       return res.status(404).json({
         success: false,
-        message: "Task not found",
+        message: 'Task not found',
       });
     }
 
@@ -84,7 +97,7 @@ exports.getTaskById = async (req, res) => {
     if (task.user.toString() !== req.user._id.toString()) {
       return res.status(403).json({
         success: false,
-        message: "Access denied",
+        message: 'Access denied',
       });
     }
 
@@ -111,16 +124,24 @@ exports.updateTask = async (req, res) => {
     const task = await Task.findById(req.params.id);
 
     if (!task) {
+      const message = 'Task not found';
+      if (isHtmlRequest(req)) {
+        return res.redirect(`/viewtask?message=${encodeURIComponent(message)}`);
+      }
       return res.status(404).json({
         success: false,
-        message: "Task not found",
+        message,
       });
     }
 
     if (task.user.toString() !== req.user._id.toString()) {
+      const message = 'Access denied';
+      if (isHtmlRequest(req)) {
+        return res.redirect(`/viewtask?message=${encodeURIComponent(message)}`);
+      }
       return res.status(403).json({
         success: false,
-        message: "Access denied",
+        message,
       });
     }
 
@@ -133,13 +154,21 @@ exports.updateTask = async (req, res) => {
       }
     );
 
+    const message = 'Task updated successfully';
+    if (isHtmlRequest(req)) {
+      return res.redirect(`/viewtask?message=${encodeURIComponent(message)}`);
+    }
+
     return res.status(200).json({
       success: true,
-      message: "Task updated successfully",
+      message,
       task: updatedTask,
     });
 
   } catch (error) {
+    if (isHtmlRequest(req)) {
+      return res.redirect(`/viewtask?message=${encodeURIComponent(error.message)}`);
+    }
     return res.status(500).json({
       success: false,
       message: error.message,
@@ -157,27 +186,43 @@ exports.deleteTask = async (req, res) => {
     const task = await Task.findById(req.params.id);
 
     if (!task) {
+      const message = 'Task not found';
+      if (isHtmlRequest(req)) {
+        return res.redirect(`/viewtask?message=${encodeURIComponent(message)}`);
+      }
       return res.status(404).json({
         success: false,
-        message: "Task not found",
+        message,
       });
     }
 
     if (task.user.toString() !== req.user._id.toString()) {
+      const message = 'Access denied';
+      if (isHtmlRequest(req)) {
+        return res.redirect(`/viewtask?message=${encodeURIComponent(message)}`);
+      }
       return res.status(403).json({
         success: false,
-        message: "Access denied",
+        message,
       });
     }
 
     await task.deleteOne();
 
+    const message = 'Task deleted successfully';
+    if (isHtmlRequest(req)) {
+      return res.redirect(`/viewtask?message=${encodeURIComponent(message)}`);
+    }
+
     return res.status(200).json({
       success: true,
-      message: "Task deleted successfully",
+      message,
     });
 
   } catch (error) {
+    if (isHtmlRequest(req)) {
+      return res.redirect(`/viewtask?message=${encodeURIComponent(error.message)}`);
+    }
     return res.status(500).json({
       success: false,
       message: error.message,
