@@ -1,0 +1,20 @@
+<div>
+  <h1>New Task</h1>
+  <form action="/api/task/createtask" method="post">
+    <div>
+      <label for="taskName">Task Name</label>
+      <input type="text" id="taskName" name="taskName" minlength="3" placeholder="Enter Task Name" required>
+
+      <label for="description">Description</label>
+      <input type="text" id="description" name="description" minlength="10" placeholder="Enter Description" required>
+
+      <label for="priority">Enter Priority level</label>
+      <input type="text" id="priority" name="priority" placeholder="Enter priority" required>
+
+      <label for="status">Status</label>
+      <input type="text" id="status" name="status" placeholder="Enter status" value="pending">
+
+      <button type="submit">Create Task</button>
+    </div>
+  </form>
+</div>

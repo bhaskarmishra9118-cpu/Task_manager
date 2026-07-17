@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Your Tasks</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #f4f7fb;
+      color: #222;
+    }
+
+    .container {
+      max-width: 1000px;
+      margin: 40px auto;
+      padding: 24px;
+    }
+
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 24px;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+
+    .actions a {
+      text-decoration: none;
+      margin-left: 10px;
+      padding: 10px 14px;
+      border-radius: 8px;
+      background: #4f46e5;
+      color: white;
+    }
+
+    .task-card {
+      background: white;
+      border-radius: 12px;
+      padding: 18px;
+      margin-bottom: 14px;
+      box-shadow: 0 3px 10px rgba(0,0,0,0.08);
+    }
+
+    .task-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 8px;
+    }
+
+    .badge {
+      padding: 6px 10px;
+      border-radius: 999px;
+      font-size: 12px;
+      text-transform: uppercase;
+      font-weight: bold;
+      color: white;
+    }
+
+    .badge.pending { background: #f59e0b; }
+    .badge.completed { background: #10b981; }
+    .badge.inprogress { background: #3b82f6; }
+
+    .meta {
+      display: flex;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      color: #666;
+      font-size: 14px;
+      margin-top: 10px;
+    }
+
+    .empty-state {
+      background: white;
+      border-radius: 12px;
+      padding: 24px;
+      text-align: center;
+      box-shadow: 0 3px 10px rgba(0,0,0,0.08);
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <div>
+        <h1>Your Tasks</h1>
+        <p>Welcome, <%= userName || 'User' %></p>
+      </div>
+      <div class="actions">
+        <a href="/dashboard">Back to Dashboard</a>
+        <a href="/createtask">Create Task</a>
+      </div>
+    </div>
+
+    <% if (tasks && tasks.length > 0) { %>
+      <% tasks.forEach((task) => { %>
+        <div class="task-card">
+          <div class="task-top">
+            <h3><%= task.taskName %></h3>
+            <span class="badge <%= task.status || 'pending' %>"><%= task.status || 'pending' %></span>
+          </div>
+          <p><%= task.description %></p>
+          <div class="meta">
+            <span>Priority: <strong><%= task.priority %></strong></span>
+            <span>Due: <%= task.dueDate ? new Date(task.dueDate).toDateString() : 'Not set' %></span>
+          </div>
+        </div>
+      <% }) %>
+    <% } else { %>
+      <div class="empty-state">
+        <h3>No tasks found</h3>
+        <p>Start by creating your first task from the dashboard.</p>
+      </div>
+    <% } %>
+  </div>
+</body>
+</html>

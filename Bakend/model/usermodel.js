@@ -1,31 +1,29 @@
 
 const mongoose = require('mongoose')
 
-const user_model = async(req, res) =>{
-  new mongoose.Schema({
+const userSchema = new mongoose.Schema(
+  {
     name: {
-      type:" string", 
+      type: String,
       required: true,
     },
     email: {
-      type: "string",
+      type: String,
       required: true,
-      minlength: [
-        5 , "length should be greater then 5",       
-      ],
+      minlength: [5, "length should be greater than 5"],
       unique: true,
     },
     password: {
-      type: "string",
-      unique: true,
-      required : true,
-      minlength: [
-        8 , "length should be greater then 8"
-      ]
-    }
-  
+      type: String,
+      required: true,
+      minlength: [8, "length should be greater than 8"],
+    },
+  },
+  {
+    timestamps: true,
+  }
+)
 
-  })
-  timestamps: true
-}
+const user_model = mongoose.model('User', userSchema)
+
 module.exports = user_model

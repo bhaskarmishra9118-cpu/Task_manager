@@ -1,48 +1,45 @@
 const mongoose = require('mongoose')
 
-const task_schema = async(req , res )=>{
- new mongoose.Schema({
-  user:{
-    type: mongoose.Schema.ObjectId,
-    ref: user_model,
+const taskSchema = new mongoose.Schema(
+  {
+    user: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'User',
+      required: true,
+    },
+    taskName: {
+      type: String,
+      required: [true, 'Task name is required'],
+      minlength: [5, 'Please provide a task name with at least 5 characters'],
+    },
+    description: {
+      type: String,
+      required: [true, 'Description is required'],
+      minlength: [10, 'Description must be at least 10 characters'],
+    },
+    priority: {
+      type: String,
+      enum: ['high', 'medium', 'low'],
+      required: [true, 'Priority is required'],
+    },
+    pending: {
+      type: Number,
+      default: 0,
+    },
+    dueDate: {
+      type: Date,
+    },
+    status: {
+      type: String,
+      enum: ['completed', 'pending', 'inprogress'],
+      default: 'pending',
+    },
   },
-  taskName: {
-    type: "string", 
-    required: "true",
-    minlength: [
-      5 , "please provide taskLength greater then 5 "
-    ]
-  },
-  description: {
-    type: "string", 
-    required: 'true',
-    minlength: [10 , "this field must be greater then 10 characters"]
-  },
-  createdAt: {
-    type: "Date",
-    unique: true,
-
-  },
-  priority: {
-    type: 'string',
-    enum: ["high" , "medium", "low"],
-
-  },
-  pending: {
-    type: "Number",
-    default: 0
-  },
-  dueDate: {
-    type: "Date", 
-    
-  },
-  status: {
-    type: "string",
-    enum: ['comleted' , 'pending' , 'inprogress'],
-    default: 'pending'
+  {
+    timestamps: true,
   }
+)
 
- })
- timestamps: true
-}
-module.exports = task_schema
+const Task = mongoose.model('Task', taskSchema)
+
+module.exports = Task

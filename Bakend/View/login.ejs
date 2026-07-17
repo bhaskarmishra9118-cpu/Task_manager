@@ -1,0 +1,18 @@
+<div style="display: flex; justify-content: space-between; flex-direction: column ; margin: 30vh;  width: 50vh ; margin-left: 60vh;margin-top: 10vh; padding: 20px ;background: linear-gradient(135deg , #667eea, #764ba4);">
+  <h1 style="padding-left: 98px;"> Login form</h1>
+  <form action="/api/auth/login" method="post" style="display: flex; flex-direction: column; padding: 20px; margin-top: 10px ;" >
+    
+    <label for="email" id="Email"> Email </label>
+    <input type="text" name="email" placeholder="Enter your email " style="margin-top:15px; border: aliceblue; padding: 10px;">
+    <label for="password" id="password" style="padding-top: 10px;"> Enter password </label>
+    <input type="password" name="password" placeholder="Enter your password " style="margin-top:15px; border: aliceblue; padding: 10px;">
+    <button type="submit" style="margin-top:15px; width: 70px; padding: 5px; margin-left: 35% ;margin-top:30px; background-color: rgb(64, 64, 228); border-radius: 20vh; ;" >Login</button>
+    <h3>Don't have an account? Please <a href="/register">register</a></h3>
+
+  </form>
+</div>
+<style>
+  body{
+    background-color: #2f3e46;
+  }
+</style>
